@@ -4,15 +4,23 @@
  * Plugin Name:     Infobox
  * Plugin URI:         https://essential-blocks.com
  * Description:     Highlight Your Key Features & Hold Audience Attention with Info Box Block.
- * Version:         1.2.6
+ * Version:         1.3.0
  * Author:          WPDeveloper
  * Author URI:         https://wpdeveloper.net
+ * Requires at least: 6.0
+ * Tested up to:    7.0
+ * Requires PHP:    7.4
  * License:         GPL-3.0-or-later
  * License URI:     https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:     infobox
  *
  * @package         infobox
  */
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
 
 /**
  * Registers all block assets so that they can be enqueued through the block editor
@@ -21,25 +29,37 @@
  * @see https://developer.wordpress.org/block-editor/tutorials/block-tutorial/applying-styles-with-stylesheets/
  */
 
-define( 'INFOBOX_VERSION', "1.2.6" );
+define( 'INFOBOX_VERSION', "1.3.0" );
 define( 'INFOBOX_ADMIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'INFOBOX_ADMIN_PATH', dirname( __FILE__ ) );
 
 require_once __DIR__ . '/includes/font-loader.php';
 require_once __DIR__ . '/includes/post-meta.php';
 require_once __DIR__ . '/includes/helpers.php';
-require_once __DIR__ . '/lib/style-handler/style-handler.php';
 
+/**
+ * `lib/style-handler` ships as a git submodule. Guard the include so an
+ * uninitialised submodule degrades gracefully instead of fataling on load.
+ */
+if ( file_exists( __DIR__ . '/lib/style-handler/style-handler.php' ) ) {
+    require_once __DIR__ . '/lib/style-handler/style-handler.php';
+}
+
+if ( ! function_exists( 'create_block_infobox_block_init' ) ) :
 function create_block_infobox_block_init() {
 
     $script_asset_path = INFOBOX_ADMIN_PATH . "/dist/index.asset.php";
     if ( ! file_exists( $script_asset_path ) ) {
-        throw new Error(
-            'You need to run `npm start` or `npm run build` for the "infobox/infobox" block first.'
-        );
+        // Build artefacts are missing (`npm run build` has not been run).
+        // Bail out instead of throwing: `Error` does not exist on PHP < 7 and
+        // an uncaught throw on `init` takes the whole site down.
+        return;
     }
-    $script_asset     = require $script_asset_path;
-    $all_dependencies = array_merge( $script_asset['dependencies'], [
+    $script_asset = require $script_asset_path;
+    if ( ! is_array( $script_asset ) || ! isset( $script_asset['dependencies'], $script_asset['version'] ) ) {
+        return;
+    }
+    $all_dependencies = array_merge( (array) $script_asset['dependencies'], [
         'wp-blocks',
         'wp-i18n',
         'wp-element',
@@ -136,5 +156,6 @@ function create_block_infobox_block_init() {
         );
     }
 }
+endif;
 
 add_action( 'init', 'create_block_infobox_block_init', 99 );

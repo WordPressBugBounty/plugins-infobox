@@ -13,13 +13,13 @@ class Infobox_Font_Loader {
     protected static $instances = null;
 
     public static $gfonts      = [];
-    private static $block_name = [];
+    private static $block_name = '';
 
     /**
      * Registers the plugin.
      */
     public static function get_instance( ...$args ) {
-        if ( self::$instances == null ) {
+        if ( null === self::$instances ) {
             self::$instances = new static( ...$args );
         }
         return self::$instances;
@@ -48,8 +48,9 @@ class Infobox_Font_Loader {
      * @access public
      */
     public function get_fonts_on_render_block( $block_content, $block ) {
-        if ( isset( $block['attrs'] ) ) {
-            if ( 'essential-blocks' === self::$block_name || $block['blockName'] === self::$block_name ) {
+        if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+            $block_name = isset( $block['blockName'] ) ? $block['blockName'] : '';
+            if ( 'essential-blocks' === self::$block_name || $block_name === self::$block_name ) {
                 $fonts        = self::get_fonts_family( $block['attrs'] );
                 self::$gfonts = array_unique( array_merge( self::$gfonts, $fonts ) );
             }
@@ -67,6 +68,10 @@ class Infobox_Font_Loader {
         $keys             = preg_grep( '/^(\w+)FontFamily/i', array_keys( $attributes ), 0 );
         $googleFontFamily = [];
         foreach ( $keys as $key ) {
+            // Non-scalar values are an illegal array offset and throw a TypeError on PHP 8+.
+            if ( ! isset( $attributes[$key] ) || ! is_string( $attributes[$key] ) || '' === $attributes[$key] ) {
+                continue;
+            }
             $googleFontFamily[$attributes[$key]] = $attributes[$key];
         }
         return $googleFontFamily;
