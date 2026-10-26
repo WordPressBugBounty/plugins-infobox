@@ -4,7 +4,7 @@
  * Plugin Name:     Infobox
  * Plugin URI:         https://essential-blocks.com
  * Description:     Highlight Your Key Features & Hold Audience Attention with Info Box Block.
- * Version:         1.3.0
+ * Version:         1.3.1
  * Author:          WPDeveloper
  * Author URI:         https://wpdeveloper.net
  * Requires at least: 6.0
@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @see https://developer.wordpress.org/block-editor/tutorials/block-tutorial/applying-styles-with-stylesheets/
  */
 
-define( 'INFOBOX_VERSION', "1.3.0" );
+define( 'INFOBOX_VERSION', "1.3.1" );
 define( 'INFOBOX_ADMIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'INFOBOX_ADMIN_PATH', dirname( __FILE__ ) );
 
