@@ -4,7 +4,7 @@ Tags: block, blocks, infobox, info box, icon box, gutenberg, gutenberg blocks
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -77,10 +77,26 @@ Consider checking out our other WordPress solutions & boost your WordPress websi
 
 Yes, it will work with any standard WordPress theme.
 
+== External services ==
+
+This plugin can load fonts from Google Fonts, a service provided by Google.
+
+It is used when you choose a font family (anything other than "Default") in an Infobox block's typography settings. On pages that show such a block, the visitor's browser requests the font stylesheet from `fonts.googleapis.com`, and the font files from Google's servers. This sends Google the visitor's IP address and browser information (such as the user agent and referring page). If every Infobox block on a page uses the "Default" font, no request is made.
+
+Google Fonts is provided by Google LLC: [Terms of Service](https://policies.google.com/terms), [Privacy Policy](https://policies.google.com/privacy).
+
 == Screenshots ==
 
 
 == Changelog ==
+
+= 1.3.2 - 12/11/2026 =
+* Added: Prefix option with text & badge style
+* Added: Hover animation, shadow presets, max width & equal height options
+* Added: Image caption & link option
+* Fixed: Frontend conflict with Essential Blocks
+* Improved: Security enhancements
+* Few minor bug fixes & improvements
 
 = 1.3.1 - 26/10/2026 =
 * Improved: Security enhancements

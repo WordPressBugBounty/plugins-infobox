@@ -65,6 +65,9 @@ class Infobox_Helper
             wp_localize_script('infobox-controls-util', 'EssentialBlocksLocalize', array(
                 'eb_wp_version' => (float) get_bloginfo('version'),
                 'rest_rootURL' => get_rest_url(),
+                // Read by EBIconPicker in the controls bundle. Without it the picker
+                // hides the Font Awesome library and offers only Dashicons.
+                'fontAwesome' => 'true',
             ));
 
             if ($hook == 'post-new.php' || $hook == 'post.php') {
@@ -76,25 +79,8 @@ class Infobox_Helper
                     'editor_type' => 'edit-site'
                 ));
             }
-
-			wp_register_style(
-				'essential-blocks-iconpicker-css',
-				INFOBOX_ADMIN_URL . 'dist/style-modules.css',
-				[],
-				INFOBOX_VERSION,
-				'all'
-			);
-
-            wp_register_style(
-                'infobox-editor-css',
-                INFOBOX_ADMIN_URL . 'dist/modules.css',
-                array(
-                    'create-block-infobox-block-css',
-					'essential-blocks-iconpicker-css'
-                ),
-                $controls_dependencies['version'],
-                'all'
-            );
+            // The editor styles (`infobox-editor-css`) are registered on `init`
+            // in infobox.php, not here: see the note there.
         }
     }
     /**
