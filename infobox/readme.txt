@@ -4,7 +4,7 @@ Tags: block, blocks, infobox, info box, icon box, gutenberg, gutenberg blocks
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.3.2
+Stable tag: 1.3.3
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -89,6 +89,12 @@ Google Fonts is provided by Google LLC: [Terms of Service](https://policies.goog
 
 
 == Changelog ==
+
+= 1.3.3 - 15/11/2026 =
+* Fixed: Unsaved changes issue in editor
+* Improved: Link sanitization on frontend
+* Improved: Security enhancements
+* Few minor bug fixes & improvements
 
 = 1.3.2 - 12/11/2026 =
 * Added: Prefix option with text & badge style

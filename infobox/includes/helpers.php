@@ -99,5 +99,49 @@ class Infobox_Helper
     {
         return $blockPath;
     }
+
+    /**
+     * Clear links that run script when followed.
+     *
+     * save() already drops these schemes, but content saved before 1.3.2
+     * by a user with unfiltered_html can still hold one. Same rule as
+     * sanitizeLinkUrl() in src/helpers.js: only javascript:, vbscript: and
+     * data: are cleared, so app links such as whatsapp: keep working.
+     *
+     * Needs the HTML API (WordPress 6.2+); on older versions the markup is
+     * returned as is.
+     *
+     * @param string $content Rendered block markup.
+     * @return string
+     */
+    public static function sanitize_links($content)
+    {
+        if (!is_string($content) || false === stripos($content, 'href') || !class_exists('WP_HTML_Tag_Processor')) {
+            return $content;
+        }
+
+        $tags = new WP_HTML_Tag_Processor($content);
+        while ($tags->next_tag('a')) {
+            $href = $tags->get_attribute('href');
+            if (is_string($href) && self::is_script_link($href)) {
+                $tags->set_attribute('href', '');
+            }
+        }
+
+        return $tags->get_updated_html();
+    }
+
+    /**
+     * Whether a link uses a scheme that runs script.
+     *
+     * @param string $link
+     * @return bool
+     */
+    private static function is_script_link($link)
+    {
+        // Browsers ignore control characters and spaces inside a scheme.
+        $normalised = preg_replace('/[\x00-\x20\x7f]/', '', $link);
+        return (bool) preg_match('/^(javascript|vbscript|data):/i', $normalised);
+    }
 }
 Infobox_Helper::register();
